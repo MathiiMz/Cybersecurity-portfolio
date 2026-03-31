@@ -4,9 +4,15 @@
 
 ``index=main sourcetype=Ubuntu-Victima sshd``
 
+### Objetivo
+- Visualizar eventos generales asociados al servicio SSH en el host monitoreado.
+
 ## Detección de autenticaciones fallidas
 
 ``index=main sourcetype=Ubuntu-Victima "Failed password"``
+
+### Objetivo
+- Identificar intentos fallidos de autenticación SSH potencialmente asociados a acceso no autorizado.
 
 ## Conteo por usuario e IP
 
@@ -14,10 +20,16 @@
 | stats count by user, src
 | sort - count``
 
+### Objetivo
+- Determinar usuarios objetivo y direcciones IP de origen con mayor volumen de intentos fallidos.
+
 ## Conteo temporal
 
 ``index=main sourcetype=Ubuntu-Victima "Failed password"
 | timechart count``
+
+### Objetivo
+- Visualizar la frecuencia de intentos fallidos en el tiempo para identificar comportamiento repetitivo o anómalo.
 
 ### Hallazgos
 - Se observaron múltiples intentos fallidos de autenticación sobre SSH.

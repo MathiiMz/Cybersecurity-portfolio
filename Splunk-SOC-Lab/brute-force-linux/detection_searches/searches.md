@@ -1,36 +1,46 @@
-# Detection Searches — Case 01 SSH Brute Force
+# Detección en Splunk - Caso 01: Fuerza Bruta
 
-## 1) Raw failed SSH events
-``spl
-index=main sourcetype=Ubuntu-Victima "Failed password"``
+## Búsqueda base
 
-### Purpose
-Used to identify raw authentication failure events.
+``index=main sourcetype=Ubuntu-Victima sshd``
 
-## 2) Failed attempts by source IP
+## Detección de autenticaciones fallidas
 
-`` index=main sourcetype=Ubuntu-Victima "Failed password"
-| rex "from (?<src_ip>\d+\.\d+\.\d+\.\d+)"
-| stats count by src_ip
-| sort - count``
+``index=main sourcetype=Ubuntu-Victima "Failed password"``
 
-### Purpose
-Highlights the source IPs generating the most failed SSH login attempts.
-
-## 3) Failed attempts by username
+## Conteo por usuario e IP
 
 ``index=main sourcetype=Ubuntu-Victima "Failed password"
-| rex "for (invalid user )?(?<user>\w+)"
-| stats count by user
+| stats count by user, src
 | sort - count``
 
-### Purpose
-Shows which usernames are being targeted.
-
-## 4) Brute force trend over time
+## Conteo temporal
 
 ``index=main sourcetype=Ubuntu-Victima "Failed password"
-| timechart span=5m count``
+| timechart count``
 
-### Purpose
-Visualizes spikes in failed authentication activity over time.
+### Hallazgos
+- Se observaron múltiples intentos fallidos de autenticación sobre SSH.
+- Fue posible identificar usuarios objetivo e IP de origen asociadas a los intentos.
+- La actividad observada es consistente con comportamiento de fuerza bruta o validación de credenciales.
+
+### Clasificación
+- Detección válida / intento de acceso no autorizado
+
+### Valor analítico
+- Este caso permitió practicar:
+  - monitoreo de autenticación
+  - detección de acceso inicial
+  - identificación de patrones repetitivos
+  - análisis de eventos de seguridad en Linux
+  - priorización de eventos en un escenario SOC
+
+### Limitaciones
+- Laboratorio controlado
+- Sin integración con listas de reputación
+- Sin correlación con firewall o IDS
+
+### Lecciones aprendidas
+- Los logs de autenticación son una fuente crítica para detectar intentos de acceso no autorizado.
+- La frecuencia y repetición de eventos son claves para diferenciar error humano de actividad sospechosa.
+- Una detección simple bien planteada puede entregar alto valor operativo.

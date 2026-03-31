@@ -1,11 +1,18 @@
-# Notas de evidencia
+# Evidencia — Caso 01: Fuerza Bruta SSH
 
 ## Actividad simulada
+Se realizaron múltiples intentos fallidos de autenticación SSH con el objetivo de generar eventos asociados a acceso no autorizado en logs Linux.
 
-Se realizaron múltiples intentos fallidos de autenticación SSH para generar eventos de acceso no autorizado en logs Linux.
+## Evidencia observada
+- Los eventos fueron visibles en `auth.log`.
+- Splunk permitió identificar la repetición de intentos fallidos.
+- La actividad presentó un patrón consistente con fuerza bruta sobre servicio SSH.
 
-## Observaciones
+## Evidencia recomendada en capturas
+- Eventos crudos con `Failed password`
+- Conteo por usuario e IP
+- Vista temporal de la actividad
+- Dashboard o panel asociado, si aplica
 
-- Los eventos fueron visibles en auth.log
-- Splunk permitió detectar la repetición de intentos
-- La actividad fue consistente con un patrón de brute force
+## Conclusión
+La telemetría recolectada permitió detectar de forma efectiva actividad compatible con intentos de acceso inicial mediante validación repetitiva de credenciales.

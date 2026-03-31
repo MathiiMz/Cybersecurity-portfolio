@@ -1,47 +1,76 @@
-# Brute Force SSH – Linux + Splunk
+# Detección en Splunk — Caso 01: Fuerza Bruta SSH
 
-## Objetivo
+## Búsqueda base
 
-Detectar intentos repetidos de autenticación fallida sobre un servicio SSH en un sistema Linux, simulando un posible ataque de fuerza bruta orientado a acceso inicial.
+``index=main sourcetype=Ubuntu-Victima sshd``
 
-## Escenario
+### Objetivo
+Visualizar eventos generales asociados al servicio SSH en el host monitoreado.
 
-Se generaron múltiples intentos fallidos de autenticación SSH contra un servidor Linux con el fin de validar la visibilidad de eventos de acceso y su detección desde Splunk.
+``Detección de autenticaciones fallidas
+index=main sourcetype=Ubuntu-Victima "Failed password"``
 
-El objetivo fue identificar:
+### Objetivo
+Identificar intentos fallidos de autenticación SSH potencialmente asociados a acceso no autorizado.
 
-- múltiples fallos de autenticación
-- repetición de intentos sobre una misma cuenta
-- posible actividad de acceso no autorizada
+## Conteo por usuario e IP
 
-## Arquitectura
+``index=main sourcetype=Ubuntu-Victima "Failed password"
+| stats count by user, src
+| sort - count``
 
-- Kali Linux (simulación ofensiva controlada)
-- Ubuntu Server (víctima / fuente de logs)
-- Splunk Enterprise (SIEM)
-- Splunk Universal Forwarder
+### Objetivo
+Determinar usuarios objetivo y direcciones IP de origen con mayor volumen de intentos fallidos.
 
-## Fuente de datos
+## Conteo temporal
 
-- `/var/log/auth.log`
-- `sourcetype=Ubuntu-Victima`
-- `index=main`
+``index=main sourcetype=Ubuntu-Victima "Failed password"
+| timechart count``
 
-## Implementación técnica
+### Objetivo
+Visualizar la frecuencia de intentos fallidos en el tiempo para identificar comportamiento repetitivo o anómalo.
 
-### 1. Recolección de logs
+### Hallazgos
+- Se observaron múltiples intentos fallidos de autenticación sobre SSH.
+- Fue posible identificar usuarios objetivo e IP de origen asociadas a los intentos.
+- La actividad observada es consistente con comportamiento de fuerza bruta o validación de credenciales.
 
-Se configuró Splunk Forwarder en el servidor Linux para enviar logs de autenticación hacia Splunk.
+### Clasificación
+Detección válida / intento de acceso no autorizado
 
-### 2. Validación de eventos
+### Valor analítico
+Este caso permitió practicar:
+  - monitoreo de autenticación
+  - detección de acceso inicial
+  - identificación de patrones repetitivos
+  - análisis de eventos de seguridad en Linux
+  - priorización de eventos en un escenario SOC
 
-Se verificó la llegada de eventos asociados a autenticación SSH fallida.
+### Limitaciones
+- Laboratorio controlado
+- Sin integración con listas de reputación
+- Sin correlación con firewall o IDS
 
-## Simulación / generación de eventos
+### Lecciones aprendidas
+- Los logs de autenticación representan una fuente crítica para detectar intentos de acceso no autorizado.
+- La frecuencia y repetición de eventos permiten diferenciar errores operativos normales de actividad potencialmente maliciosa.
+- Una detección simple, bien planteada y correctamente interpretada puede aportar alto valor operativo.
 
-Se realizaron múltiples intentos fallidos de acceso SSH con credenciales incorrectas contra el servidor Linux.
+# Evidencia — Caso 01: Fuerza Bruta SSH
 
-Ejemplo de actividad generada:
+## Actividad simulada
+Se realizaron múltiples intentos fallidos de autenticación SSH con el objetivo de generar eventos asociados a acceso no autorizado en logs Linux.
 
-```bash
-ssh usuario@IP_DEL_SERVIDOR
+## Evidencia observada
+- Los eventos fueron visibles en `auth.log`.
+- Splunk permitió identificar la repetición de intentos fallidos.
+- La actividad presentó un patrón consistente con fuerza bruta sobre servicio SSH.
+
+## Evidencia recomendada en capturas
+- Eventos crudos con `Failed password`
+- Conteo por usuario e IP
+- Vista temporal de la actividad
+- Dashboard o panel asociado, si aplica
+
+## Conclusión
+La telemetría recolectada permitió detectar de forma efectiva actividad compatible con intentos de acceso inicial mediante validación repetitiva de credenciales.

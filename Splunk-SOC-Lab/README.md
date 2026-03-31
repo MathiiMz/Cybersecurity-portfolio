@@ -1,62 +1,54 @@
-# SOC Lab – Splunk Detection Engineering
+# Splunk SOC Labs
+
+Este repositorio documenta ejercicios prácticos de análisis de eventos de seguridad realizados en un laboratorio SOC con Splunk, enfocados en detección, monitoreo y validación de actividad sospechosa en entornos Linux.
 
 ## Objetivo
 
-Diseñar e implementar un laboratorio SOC para simular escenarios de seguridad ofensiva controlada y desarrollar capacidades de monitoreo, detección, correlación y triage en Splunk.
+Desarrollar experiencia práctica en:
 
-## Arquitectura del laboratorio
+- ingestión y análisis de logs
+- detección de eventos de seguridad
+- correlación de actividad
+- triage y validación de alertas
+- documentación técnica de hallazgos
 
-**Flujo de telemetría:**
+## Entorno de laboratorio
 
-Kali (ataque controlado) → Ubuntu Server (víctima / logs) → Splunk Universal Forwarder → Splunk Enterprise (SIEM)
+- SIEM: Splunk Enterprise
+- Forwarding: Splunk Universal Forwarder
+- Sistemas monitoreados: Linux (Ubuntu Server)
+- Escenarios simulados: autenticación, privilegios, ejecución de procesos, actividad sospechosa y validación de fuentes de datos
 
-## Componentes utilizados
+## Casos documentados
 
-- Kali Linux
-- Ubuntu Server
-- Splunk Enterprise
-- Splunk Universal Forwarder
-- Linux auth logs
-- Linux auditd
+### 1. Brute Force SSH
+Detección de intentos repetidos de autenticación fallida sobre servicio SSH.
 
-## Capacidades implementadas
+### 2. Privilege Escalation
+Monitoreo de uso de privilegios elevados y cambios de contexto a root.
 
-- Centralización de logs Linux
-- Monitoreo de autenticación SSH
-- Detección de patrones sospechosos de login
-- Monitoreo de uso de privilegios
-- Auditoría de ejecución de procesos
-- Correlación de eventos de autenticación y post-explotación
-- Dashboards operativos en Splunk
-- Identificación de gaps de visibilidad en telemetría
+### 3. Suspicious Process Execution
+Visibilidad sobre ejecución de procesos en Linux mediante auditoría.
 
-## Casos desarrollados
+### 4. Suspicious Download Activity
+Detección de herramientas asociadas a descarga remota y comunicación externa.
 
-### Caso 1 – Fuerza bruta SSH
-Detección de múltiples intentos fallidos de autenticación desde una misma IP.
+### 5. DNS Visibility Gap
+Documentación de limitaciones de visibilidad para monitoreo de actividad DNS.
 
-### Caso 2 – Patrón sospechoso de autenticación
-Detección de secuencia repetitiva fail → success, consistente con validación de credenciales.
+### 6. Log Source Validation & False Positive Analysis
+Validación de eventos inicialmente sospechosos y clasificación analítica de falsos positivos.
 
-### Caso 3 – Escalamiento de privilegios
-Análisis de eventos sudo y uso de privilegios elevados posterior a autenticación.
+## Habilidades aplicadas
 
-### Caso 4 – Actividad post-explotación
-Correlación de eventos posteriores al login para identificar comportamiento anómalo.
+- Splunk SPL
+- Linux logging
+- análisis de autenticación
+- triage de eventos
+- correlación de actividad
+- documentación técnica
+- validación de fuentes de datos
 
-### Caso 5 – Gap de visibilidad DNS
-Análisis de limitaciones en trazabilidad DNS y documentación de brecha de monitoreo.
+## Nota
 
-### Caso 6 – Ejecución sospechosa de herramientas de red
-Monitoreo de ejecución de procesos mediante auditd para identificar actividad asociada a descarga remota o comunicación externa.
-
-## Habilidades demostradas
-
-- Análisis de logs
-- Detección basada en eventos
-- Triage
-- Correlación
-- Documentación técnica
-- Enfoque SOC junior
-- Validación de falsos positivos
-- Identificación de brechas de monitoreo
+Todos los ejercicios fueron realizados en entorno de laboratorio controlado con fines de aprendizaje, práctica técnica y fortalecimiento de capacidades orientadas a roles SOC / Blue Team.
